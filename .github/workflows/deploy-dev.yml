@@ -146,7 +146,8 @@ jobs:
           # git checkout main
           cp ../new/provider.tf .
           ls -la
-          terraform plan -no-color -input=false
+          terraform init
+          terraform plan -no-color -input=false -out=rollback.tfplan
           # terraform init
           # terraform apply -auto-approve -input=false
         env:
@@ -164,7 +165,7 @@ jobs:
         run: |
           cd working-code
           terraform init
-          terraform apply -auto-approve -input=false
+          terraform apply rollback.tfplan -auto-approve -input=false 
       
       - name: Setup Git
         run: |
