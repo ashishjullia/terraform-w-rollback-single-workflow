@@ -153,6 +153,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: trstringer/manual-approval@v1
+        if: steps.rollback.outcome == 'success'
         id: approval
         with:
           secret: ${{ secrets.TOKEN }}
