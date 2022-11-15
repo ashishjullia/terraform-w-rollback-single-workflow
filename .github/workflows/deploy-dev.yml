@@ -167,7 +167,9 @@ jobs:
           cd intermediate-code-$rollback_time
           unzip -q working-code.zip
           rm working-code.zip
-
+          
+          cd ..
+          
           mkdir to-be-deleted
           mv ./latest-code/.* ./to-be-deleted/
           mv ./to-be-deleted/.git ./latest-code/
