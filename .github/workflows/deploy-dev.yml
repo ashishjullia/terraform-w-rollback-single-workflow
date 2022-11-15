@@ -199,7 +199,8 @@ jobs:
         run: |
           cd working-code
           terraform init
-          terraform apply rollback.tfplan -auto-approve -input=false 
+          # terraform apply rollback.tfplan -auto-approve -input=false 
+          terraform apply rollback.tfplan
       
       - name: create pull request
         id: pullrequest
