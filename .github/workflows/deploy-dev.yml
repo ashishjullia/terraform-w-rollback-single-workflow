@@ -1,0 +1,177 @@
+name: deploy development
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup AWS CLI for "gh actions" user
+        id: ghactions
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
+          role-duration-seconds: 1200
+          role-session-name: GithubActionsSession
+
+      - name: Upload working code to s3
+        id: s3upload
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v3
+        with:
+          repository: "ashishjullia/test-tf-gh-actions"
+          fetch-depth: '0'
+          ref: 'main'
+          path: s3-upload
+      
+      - name: Copy current working code to s3 bucket
+        if: github.event_name == 'pull_request'
+        run: |
+          cd s3-upload
+          ls
+          zip -r working-code.zip .
+          aws s3 cp working-code.zip s3://tf-test-s3-ashish/working-code/
+
+      - name: Get Terraform Version
+        run: |
+          echo "TF_VERSION=$(head -n 1 .terraform-version)" >> $GITHUB_ENV
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: $TF_VERSION
+
+      # Check Terraform configuration files to a canonical format and style
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      # validates the configuration files in a directory, referring only to the configuration 
+      # and not accessing any remote services such as remote state, provider APIs, etc.
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        id: plan
+        # if: github.event_name == 'pull_request'
+        if: "steps.init.outcome == 'success' && github.event_name == 'pull_request'"
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        id: apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          terraform apply -auto-approve -input=false
+        continue-on-error: true
+
+      - name: old directory
+        id: old
+        if: steps.apply.outcome == 'failure'
+        uses: actions/checkout@v3
+        with:
+          # repository: 
+          fetch-depth: '0'
+          path: old
+      
+      - name: new directory
+        uses: actions/checkout@v3
+        id: new
+        if: steps.old.outcome == 'success'
+        with:
+          # repository: 
+          # fetch-depth: 'HEAD~1'
+          path: new
+      
+      - name: Setup Code and Rollback
+        id: rollback
+        if: steps.old.outcome == 'success'
+        run: |
+          mkdir working-code
+          aws s3 cp s3://tf-test-s3-ashish/working-code/working-code.zip ./working-code/
+          cd working-code
+          unzip -q working-code.zip
+          rm working-code.zip
+          # git config user.name "GitHub Actions Bot"
+          # git config user.email "<>"
+          # git checkout main
+          cp ../new/provider.tf .
+          ls -la
+          terraform init
+          terraform apply -auto-approve -input=false
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "<>"
+      
+      - name: create pull request
+        id: pullrequest
+        if: steps.rollback.outcome == 'success'
+        run: |
+          # cd old
+          mkdir intermediate-code
+          aws s3 cp s3://tf-test-s3-ashish/working-code/working-code.zip ./intermediate-code/
+          # cd working-code-rollback
+          cd intermediate-code
+          unzip -q working-code.zip
+          rm working-code.zip
+          git checkout old-code
+          git pull
+          date > rollback
+          git add .
+          git commit -m "rollback"
+          git push origin old-code
+          gh pr create -B main -H old-code --title 'Merge old-code into main' --body 'Created by Github action'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
