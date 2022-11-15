@@ -148,6 +148,7 @@ jobs:
           ls -la
           terraform init
           terraform plan -no-color -input=false -out=rollback.tfplan
+          cat rollback.tfplan
           # terraform init
           # terraform apply -auto-approve -input=false
         env:
