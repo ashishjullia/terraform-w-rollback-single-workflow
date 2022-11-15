@@ -28,7 +28,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/checkout@v3
         with:
-          repository: "ashishjullia/test-tf-gh-actions"
+          repository: "ashishjullia/terraform-w-rollback"
           fetch-depth: '0'
           ref: 'main'
           path: s3-upload
