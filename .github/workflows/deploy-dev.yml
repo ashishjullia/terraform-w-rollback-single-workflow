@@ -38,9 +38,9 @@ jobs:
       #     ref: 'main'
       #     path: s3-upload
 
-      - name: Upload working code to s3
+      - name: Capture working code
         id: for-release
-        if: github.event_name == 'pull_request'
+        # if: github.event_name == 'pull_request'
         uses: actions/checkout@v3
         with:
           repository: "ashishjullia/terraform-w-rollback"
