@@ -4,9 +4,9 @@
 # }
 
 resource "aws_instance" "instance" {
-  ami           = data.aws_ami.ami.id
-  instance_type = "t2.micro"
-  # associate_public_ip_address = true
+  ami                         = data.aws_ami.ami.id
+  instance_type               = "t2.micro"
+  associate_public_ip_address = true
 
   vpc_security_group_ids = [aws_security_group.main.id]
   subnet_id              = aws_subnet.subnet.id
@@ -22,6 +22,6 @@ resource "aws_instance" "instance" {
   # user_data = data.template_file.default.rendered
 
   tags = {
-    Name = "modified instance"
+    Name = var.ec2_instance
   }
 }
