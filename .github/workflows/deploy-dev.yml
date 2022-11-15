@@ -155,7 +155,7 @@ jobs:
       - uses: trstringer/manual-approval@v1
         id: approval
         with:
-          secret: ${{ secret.TOKEN }}
+          secret: ${{ secrets.TOKEN }}
           approvers: ashishjullia
 
       - name: Approved Rollback 
