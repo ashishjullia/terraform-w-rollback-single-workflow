@@ -169,12 +169,18 @@ jobs:
           rm working-code.zip
           
           cd ..
-          
+
           mkdir to-be-deleted
-          mv ./latest-code/.* ./to-be-deleted/
+          cp -ar ./latest-code/. ./to-be-deleted/
+          rm -rf latest-code
+
+          mkdir latest-code
+
+          #mv ./latest-code/.* ./to-be-deleted/
+          
           mv ./to-be-deleted/.git ./latest-code/
 
-          mv ./intermediate-code-$rollback_time/.* ./latest-code/
+          cp -ar ./intermediate-code-$rollback_time/. ./latest-code/
 
           cd latest-code
 
