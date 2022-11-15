@@ -22,25 +22,41 @@ jobs:
           role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
           role-duration-seconds: 1200
           role-session-name: GithubActionsSession
+      
+      - name: Setup Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "<>"
+
+      # - name: Upload working code to s3
+      #   id: s3upload
+      #   if: github.event_name == 'pull_request'
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: "ashishjullia/terraform-w-rollback"
+      #     fetch-depth: '0'
+      #     ref: 'main'
+      #     path: s3-upload
 
       - name: Upload working code to s3
-        id: s3upload
+        id: for-release
         if: github.event_name == 'pull_request'
         uses: actions/checkout@v3
         with:
           repository: "ashishjullia/terraform-w-rollback"
           fetch-depth: '0'
           ref: 'main'
-          path: s3-upload
+          path: for-release
       
-      - name: Copy current working code to s3 bucket
-        if: github.event_name == 'pull_request'
-        run: |
-          cd s3-upload
-          ls
-          rm -rf .git
-          zip -r working-code.zip .
-          aws s3 cp working-code.zip s3://tf-test-s3-ashish/working-code/
+      # - name: Copy current working code to s3 bucket
+      #   if: github.event_name == 'pull_request'
+      #   run: |
+      #     cd s3-upload
+      #     ls
+      #     rm -rf .git
+      #     # zip -r working-code.zip .
+      #     # aws s3 cp working-code.zip s3://tf-test-s3-ashish/working-code/
+      #     date '+%Y%m%d%H%M%S' | xargs -t -I % sh -c '{ git tag "release-%"; gh release create "release-%" --generate-notes --target main; }'
 
       - name: Get Terraform Version
         run: |
@@ -114,6 +130,15 @@ jobs:
           terraform apply -auto-approve -input=false
         continue-on-error: true
 
+      - name: If apply successful, create a release
+        id: release
+        if: steps.apply.outcome == 'success'
+        run: |
+          cd for-release
+          ls
+          rm -rf .git
+          date '+%Y%m%d%H%M%S' | xargs -t -I % sh -c '{ git tag "release-%"; gh release create "release-%" --generate-notes --target main; }'
+
       - name: latest-code directory
         id: latest-code
         if: steps.apply.outcome == 'failure'
@@ -136,14 +161,21 @@ jobs:
         id: rollback
         if: steps.new.outcome == 'success'
         run: |
-          mkdir working-code
-          aws s3 cp s3://tf-test-s3-ashish/working-code/working-code.zip ./working-code/
+          # mkdir working-code
+          # aws s3 cp s3://tf-test-s3-ashish/working-code/working-code.zip ./working-code/
+          # latest_release=$(gh release list | awk '{print $1}' | head -1)
+          # gh release list | awk '{print $1}' | head -1 | xargs -t -I % sh -c '{ gh release download % --archive=zip;}'
+          # gh release list | awk '{print $1}' | head -1 | xargs -t -I % sh -c '{ gh release download % --archive=zip; mv test-tf-gh-actions-%.zip working-code.zip;}'
+
+          gh release list | awk '{print $1}' | head -1 | xargs -t -I % sh -c '{ gh release download % --archive=zip; unzip -q test-tf-gh-actions-%.zip; mv test-tf-gh-actions-% working-code;}'
           cd working-code
-          unzip -q working-code.zip
-          rm working-code.zip
+
+          # unzip -q working-code.zip
+          # rm working-code.zip
           # git config user.name "GitHub Actions Bot"
           # git config user.email "<>"
           # git checkout main
+
           cp ../new/provider.tf .
           ls -la
           terraform init
@@ -167,22 +199,19 @@ jobs:
           terraform init
           terraform apply rollback.tfplan -auto-approve -input=false 
       
-      - name: Setup Git
-        run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "<>"
-      
       - name: create pull request
         id: pullrequest
         if: steps.rollback.outcome == 'success'
         run: |
           rollback_time=$(date '+%Y-%m-%d-%H-%M-%S')
           mkdir intermediate-code-$rollback_time
-          aws s3 cp s3://tf-test-s3-ashish/working-code/working-code.zip ./intermediate-code-$rollback_time/
+          gh release list | awk '{print $1}' | head -1 | xargs -t -I % sh -c '{ gh release download % --archive=zip; unzip -q test-tf-gh-actions-%.zip; mv test-tf-gh-actions-% intermediate-code-$rollback_time;}'
+          
+          # aws s3 cp s3://tf-test-s3-ashish/working-code/working-code.zip ./intermediate-code-$rollback_time/
 
           cd intermediate-code-$rollback_time
-          unzip -q working-code.zip
-          rm working-code.zip
+          # unzip -q working-code.zip
+          # rm working-code.zip
           
           cd ..
 
