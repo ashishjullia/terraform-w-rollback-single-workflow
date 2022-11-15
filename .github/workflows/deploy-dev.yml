@@ -146,11 +146,25 @@ jobs:
           # git checkout main
           cp ../new/provider.tf .
           ls -la
-          terraform init
-          terraform apply -auto-approve -input=false
+          terraform plan -no-color -input=false
+          # terraform init
+          # terraform apply -auto-approve -input=false
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: trstringer/manual-approval@v1
+        id: approval
+        with:
+          secret: ${{ secret.TOKEN }}
+          approvers: ashishjullia
+
+      - name: Approved Rollback 
+        if: steps.approval.outcome == 'success'
+        run: |
+          cd working-code
+          terraform init
+          terraform apply -auto-approve -input=false
+      
       - name: Setup Git
         run: |
           git config --global user.name "GitHub Actions Bot"
