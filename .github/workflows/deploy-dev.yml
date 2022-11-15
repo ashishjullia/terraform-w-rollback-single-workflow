@@ -134,7 +134,7 @@ jobs:
       
       - name: Setup Code and Rollback
         id: rollback
-        if: steps.old.outcome == 'success'
+        if: steps.new.outcome == 'success'
         run: |
           mkdir working-code
           aws s3 cp s3://tf-test-s3-ashish/working-code/working-code.zip ./working-code/
