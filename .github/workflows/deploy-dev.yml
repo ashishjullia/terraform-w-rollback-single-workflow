@@ -185,7 +185,7 @@ jobs:
           cd latest-code
 
           git checkout -b rollback-at-$rollback_time
-          git pull
+          # git pull
           date > exact-rollback-time
           git add .
           git commit -m "rollback"
