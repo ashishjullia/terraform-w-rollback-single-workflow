@@ -210,7 +210,7 @@ jobs:
           
           # mkdir intermediate-code-$rollback_time
 
-          gh release list | awk '{print $1}' | head -1 | xargs -t -I % sh -c '{ rm terraform-w-rollback-%.zip ; gh release download % --archive=zip ; unzip -q terraform-w-rollback-%.zip ; mv terraform-w-rollback-% intermediate-code ; rm terraform-w-rollback-%.zip }'
+          gh release list | awk '{print $1}' | head -1 | xargs -t -I % sh -c '{ gh release download % --archive=zip ; unzip -q terraform-w-rollback-%.zip ; mv terraform-w-rollback-% intermediate-code ; rm terraform-w-rollback-%.zip ; }'
           
           # aws s3 cp s3://tf-test-s3-ashish/working-code/working-code.zip ./intermediate-code-$rollback_time/
 
