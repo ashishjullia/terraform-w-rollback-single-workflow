@@ -14,12 +14,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Setup AWS CLI
+      - name: Setup AWS CLI for "gh actions" user
+        id: ghactions
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
+          role-duration-seconds: 1200
+          role-session-name: GithubActionsSession
 
       - name: Get Terraform Version
         run: |
