@@ -24,6 +24,7 @@ jobs:
           role-session-name: GithubActionsSession
       
       - name: Setup Git
+        # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "<>"
@@ -40,7 +41,7 @@ jobs:
 
       - name: Capture working code
         id: for-release
-        # if: github.event_name == 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/checkout@v3
         with:
           repository: "ashishjullia/terraform-w-rollback"
@@ -89,6 +90,7 @@ jobs:
         run: terraform plan -no-color -input=false
         continue-on-error: true
 
+      # This will only run on a "Pull Request"
       - name: Update Pull Request
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
