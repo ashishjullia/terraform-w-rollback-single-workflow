@@ -277,14 +277,19 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "<>" 
 
-      - name: Clone Code to 'latest-code' Directory with depth '0'
-        id: latest-code
-        # if: steps.apply.outcome == 'failure'
-        uses: actions/checkout@v3
-        with:
-          # repository: 
-          fetch-depth: '0'
-          path: latest-code
+      # - name: Clone Code to 'latest-code' Directory with depth '0'
+      #   id: latest-code
+      #   # if: steps.apply.outcome == 'failure'
+      #   uses: actions/checkout@v3
+      #   with:
+      #     # repository: 
+      #     fetch-depth: '0'
+      #     path: latest-code
+
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: latest-code
+      #     path: ./latest-code
       
       - name: Clone Code to 'new' Directory
         uses: actions/checkout@v3
@@ -359,11 +364,19 @@ jobs:
       #   with:
       #     secret: ${{ secrets.TOKEN }}
       #     approvers: ashishjullia
+      - name: Clone Code to 'latest-code' Directory with depth '0'
+        id: latest-code
+        # if: steps.apply.outcome == 'failure'
+        uses: actions/checkout@v3
+        with:
+          # repository: 
+          fetch-depth: '0'
+          path: latest-code
 
       - uses: actions/download-artifact@v3
         with:
           name: working-code
-          # path: ./working-code
+          path: ./working-code
 
       - name: Approved Rollback 
         # if: steps.approval.outcome == 'success'
