@@ -347,7 +347,7 @@ jobs:
     environment:
       name: rollback
     steps:
-      - uses: actions/checkout@v3
+      # - uses: actions/checkout@v3
       - name: Setup AWS CLI for "gh actions" user
         id: ghactions
         uses: aws-actions/configure-aws-credentials@v1-node16
