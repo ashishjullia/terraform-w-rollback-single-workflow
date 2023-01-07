@@ -385,6 +385,8 @@ jobs:
           ls -la
           cd working-code
           ls -la
+          rm .terraform.lock.hcl .terraform
+          ls -la
           terraform init
           # terraform apply rollback.tfplan -auto-approve -input=false 
           terraform apply rollback.tfplan
