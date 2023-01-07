@@ -272,10 +272,16 @@ jobs:
         # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform apply -auto-approve -input=false
-          echo "apply-outcome=${{ steps.apply.outcome }}" >> $GITHUB_OUTPUT
-          echo $GITHUB_OUTPUT
-          echo $GITHUB_ENV
+          # echo "apply-outcome=${{ steps.apply.outcome }}" >> $GITHUB_OUTPUT
+          # echo $GITHUB_OUTPUT
+          # echo $GITHUB_ENV
         continue-on-error: true
+
+      - name: Set apply outcome variable
+        id: release
+        if: steps.apply.outcome == 'failure'
+        run: |
+          echo "apply-outcome=failure" >> $GITHUB_OUTPUT
 
       - name: If apply successful, create a release
         id: release
