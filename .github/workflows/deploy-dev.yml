@@ -25,9 +25,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          # role-to-assume: arn:aws:iam::xxxxxxxxx:role/admin-role-gh-actions
-          # role-duration-seconds: 1200
-          # role-session-name: GithubActionsSession
+          role-to-assume: arn:aws:iam::xxxxxxxxx:role/admin-role-gh-actions
+          role-duration-seconds: 1200
+          role-session-name: GithubActionsSession
 
       - name: Setup TF backend (Create if it does not exists)
         run: |
@@ -95,9 +95,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          # role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
-          # role-duration-seconds: 1200
-          # role-session-name: GithubActionsSession
+          role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
+          role-duration-seconds: 1200
+          role-session-name: GithubActionsSession
 
       - name: Get Terraform Version
         run: |
@@ -180,9 +180,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          # role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
-          # role-duration-seconds: 1200
-          # role-session-name: GithubActionsSession
+          role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
+          role-duration-seconds: 1200
+          role-session-name: GithubActionsSession
       
       - name: Setup Git
         # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -303,9 +303,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          # role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
-          # role-duration-seconds: 1200
-          # role-session-name: GithubActionsSession
+          role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
+          role-duration-seconds: 1200
+          role-session-name: GithubActionsSession
 
       - name: Setup Git
         # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -376,9 +376,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          # role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
-          # role-duration-seconds: 1200
-          # role-session-name: GithubActionsSession
+          role-to-assume: arn:aws:iam::464919712823:role/admin-role-gh-actions
+          role-duration-seconds: 1200
+          role-session-name: GithubActionsSession
 
       # - uses: trstringer/manual-approval@v1
       #   if: steps.rollback.outcome == 'success'
