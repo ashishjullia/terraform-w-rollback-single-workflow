@@ -83,6 +83,7 @@ jobs:
           TF_STATE_DYNAMODB_TABLE_REGION: ${{ env.TF_STATE_DYNAMODB_TABLE_REGION }}
 
   check-tf-code-and-create-plan-and-update-pr:
+    needs: initialize-tf-backend-if-does-not-exists
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -286,6 +287,7 @@ jobs:
 ################################################################################################################################################
 
   prepare-rollback:
+    needs: deploy-to-dev
     if: ${{ needs.deploy-to-dev.outputs.apply-outcome }} == 'failure'
     runs-on: ubuntu-latest
     environment:
@@ -360,6 +362,7 @@ jobs:
 
 
   rollback:
+    needs: prepare-rollback
     if: ${{ needs.prepare-rollback.outputs.prepare-rollback-outcome }} == 'success'
     runs-on: ubuntu-latest
     environment:
