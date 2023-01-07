@@ -384,6 +384,7 @@ jobs:
         run: |
           ls -la
           cd working-code
+          ls -la
           terraform init
           # terraform apply rollback.tfplan -auto-approve -input=false 
           terraform apply rollback.tfplan
