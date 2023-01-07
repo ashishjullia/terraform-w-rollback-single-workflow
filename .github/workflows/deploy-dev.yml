@@ -404,8 +404,6 @@ jobs:
         if: steps.approved-rollback.outcome == 'success'
         run: |
           ls -la
-          cd ..
-          ls -la
           rollback_time=$(date '+%Y-%m-%d-%H-%M-%S')
           
           # mkdir intermediate-code-$rollback_time
