@@ -273,6 +273,7 @@ jobs:
 
       - name: Setup Git
         # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        # id: setupgit
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "<>" 
@@ -294,7 +295,7 @@ jobs:
       - name: Clone Code to 'new' Directory
         uses: actions/checkout@v3
         id: new
-        if: steps.latest-code.outcome == 'success'
+        if: steps.ghactions.outcome == 'success'
         with:
           # repository: 
           # fetch-depth: 'HEAD~1'
