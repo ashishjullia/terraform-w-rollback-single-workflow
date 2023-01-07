@@ -272,7 +272,7 @@ jobs:
         # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform apply -auto-approve -input=false
-          echo "apply-outcome=${{ steps.apply.apply-outcome }}" >> $GITHUB_OUTPUT
+          echo "apply-outcome=${{ steps.apply.outcome }}" >> $GITHUB_OUTPUT
           echo $GITHUB_OUTPUT
           echo $GITHUB_ENV
         continue-on-error: true
@@ -359,7 +359,7 @@ jobs:
           terraform plan -no-color -input=false -out=rollback.tfplan
           # terraform init
           # terraform apply -auto-approve -input=false
-          echo "prepare-rollback-outcome=${{ steps.prepare-rollback.prepare-rollback-outcome }}" >> $GITHUB_OUTPUT
+          echo "prepare-rollback-outcome=${{ steps.prepare-rollback.outcome }}" >> $GITHUB_OUTPUT
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
