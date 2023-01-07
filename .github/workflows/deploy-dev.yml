@@ -171,7 +171,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
-      apply-outcome: ${{ steps.apply.outputs.apply-outcome }}
+      apply-outcome: ${{ steps.setapplyoutcomevariable.outputs.apply-outcome }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup AWS CLI for "gh actions" user
