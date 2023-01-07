@@ -329,6 +329,10 @@ jobs:
         run: |
           echo "prepare-rollback-outcome=success" >> $GITHUB_OUTPUT
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: working-code
+          path: ./working-code
 
   rollback:
     needs: prepare-rollback
@@ -356,9 +360,15 @@ jobs:
       #     secret: ${{ secrets.TOKEN }}
       #     approvers: ashishjullia
 
+      - uses: actions/download-artifact@v3
+        with:
+          name: working-code
+          # path: ./working-code
+
       - name: Approved Rollback 
         # if: steps.approval.outcome == 'success'
         run: |
+          ls -la
           cd working-code
           terraform init
           # terraform apply rollback.tfplan -auto-approve -input=false 
