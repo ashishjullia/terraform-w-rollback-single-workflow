@@ -7,11 +7,11 @@ on:
   pull_request:
 
 env:
-  TF_STATE_BUCKET_NAME: "my-tf-v1-us-east-2"
-  TF_STATE_BUCKET_REGION: "us-east-2"
-  TF_STATE_DYNAMODB_TABLE_NAME: "tfstate"
-  TF_STATE_DYNAMODB_TABLE_REGION: "us-east-2"
-  WORKING_CODE_REPO: "ashishjullia/terraform-mwaa-dev"
+  TF_STATE_BUCKET_NAME: "tf-test-s3-ashish"
+  TF_STATE_BUCKET_REGION: "us-east-1"
+  TF_STATE_DYNAMODB_TABLE_NAME: "tfstate-tf-test-s3-ashish"
+  TF_STATE_DYNAMODB_TABLE_REGION: "us-east-1"
+  WORKING_CODE_REPO: "ashishjullia/terraform-w-rollback"
 
 jobs:
   initialize-tf-backend-if-does-not-exists:
@@ -194,7 +194,7 @@ jobs:
         # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/checkout@v3
         with:
-          repository: "ashishjullia/terraform-w-rollback"
+          repository: ${{ env.WORKING_CODE_REPO }}
           fetch-depth: '0'
           ref: 'main'
           path: for-release
