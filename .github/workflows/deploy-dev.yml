@@ -167,6 +167,7 @@ jobs:
 
 
   deploy-to-dev:
+    needs: initialize-tf-backend-if-does-not-exists
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
@@ -288,7 +289,7 @@ jobs:
 
   prepare-rollback:
     needs: deploy-to-dev
-    if: ${{ needs.deploy-to-dev.outputs.apply-outcome }} == 'failure'
+    if: needs.deploy-to-dev.outputs.apply-outcome == 'failure'
     runs-on: ubuntu-latest
     environment:
       name: prepare-rollback
@@ -363,7 +364,7 @@ jobs:
 
   rollback:
     needs: prepare-rollback
-    if: ${{ needs.prepare-rollback.outputs.prepare-rollback-outcome }} == 'success'
+    if: needs.prepare-rollback.outputs.prepare-rollback-outcome == 'success'
     runs-on: ubuntu-latest
     environment:
       name: rollback
