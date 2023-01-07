@@ -4,7 +4,7 @@
 # }
 
 resource "aws_instance" "instance" {
-  count = var.instance_count
+  count                       = var.instance_count
   ami                         = data.aws_ami.ami.id
   instance_type               = "t2.micro"
   associate_public_ip_address = true

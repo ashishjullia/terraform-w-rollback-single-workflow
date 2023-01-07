@@ -47,7 +47,7 @@ variable "ssh_port" {
 }
 
 variable "instance_count" {
-  type = number
+  type    = number
   default = 1
 }
 
