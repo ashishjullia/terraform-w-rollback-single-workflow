@@ -359,6 +359,12 @@ jobs:
           role-duration-seconds: 1200
           role-session-name: GithubActionsSession
 
+      - name: Setup Git
+        # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "<>"
+
       # - uses: trstringer/manual-approval@v1
       #   if: steps.rollback.outcome == 'success'
       #   id: approval
@@ -381,6 +387,7 @@ jobs:
 
       - name: Approved Rollback 
         # if: steps.approval.outcome == 'success'
+        id: approved-rollback
         run: |
           ls -la
           cd working-code
@@ -394,7 +401,7 @@ jobs:
       
       - name: create pull request
         id: pullrequest
-        if: steps.rollback.outcome == 'success'
+        if: steps.approved-rollback.outcome == 'success'
         run: |
           ls -la
           cd ..
