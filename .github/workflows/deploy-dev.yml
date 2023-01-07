@@ -404,12 +404,14 @@ jobs:
         if: steps.approved-rollback.outcome == 'success'
         run: |
           ls -la
+          cd ..
+          ls -la
           rollback_time=$(date '+%Y-%m-%d-%H-%M-%S')
           
           # mkdir intermediate-code-$rollback_time
 
           gh release list | awk '{print $1}' | head -1 | xargs -t -I % sh -c '{ gh release download % --archive=zip ; unzip -q terraform-w-rollback-%.zip ; mv terraform-w-rollback-% intermediate-code ; rm terraform-w-rollback-%.zip ; }'
-          
+          ls -la
           # aws s3 cp s3://tf-test-s3-ashish/working-code/working-code.zip ./intermediate-code-$rollback_time/
 
           # cd intermediate-code
@@ -427,11 +429,11 @@ jobs:
           #mv ./latest-code/.* ./to-be-deleted/
           
           mv ./to-be-deleted/.git ./latest-code/
-
+          ls -la
           cp -ar ./intermediate-code/. ./latest-code/
 
           cd latest-code
-
+          ls -la
           git checkout -b rollback-at-$rollback_time
           # git pull
           date > exact-rollback-time
