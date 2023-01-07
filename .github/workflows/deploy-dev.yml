@@ -278,7 +278,7 @@ jobs:
         continue-on-error: true
 
       - name: Set apply outcome variable
-        id: release
+        id: setapplyoutcomevariable
         if: steps.apply.outcome == 'failure'
         run: |
           echo "apply-outcome=failure" >> $GITHUB_OUTPUT
