@@ -273,6 +273,8 @@ jobs:
         run: |
           terraform apply -auto-approve -input=false
           echo "apply-outcome=${{ steps.apply.apply-outcome }}" >> $GITHUB_OUTPUT
+          echo $GITHUB_OUTPUT
+          echo $GITHUB_ENV
         continue-on-error: true
 
       - name: If apply successful, create a release
