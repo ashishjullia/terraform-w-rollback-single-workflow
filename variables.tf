@@ -46,6 +46,11 @@ variable "ssh_port" {
   default = "22"
 }
 
+variable "instance_count" {
+  type    = number
+  default = 1
+}
+
 # variable "EC2_PRIVATE_KEY" {
 #   type = string
 #   # default = "value"
