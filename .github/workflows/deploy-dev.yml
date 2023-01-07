@@ -286,6 +286,7 @@ jobs:
 ################################################################################################################################################
 
   prepare-rollback:
+    if: ${{ needs.deploy-to-dev.outputs.apply-outcome }} == 'failure'
     runs-on: ubuntu-latest
     environment:
       name: prepare-rollback
