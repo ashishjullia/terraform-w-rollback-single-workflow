@@ -296,7 +296,7 @@ jobs:
           path: new
       
       - name: Setup Terraform Code For Rollback
-        id: prepare-rollback
+        id: prepare-intermediate-rollback
         if: steps.new.outcome == 'success'
         run: |
           # mkdir working-code
@@ -325,7 +325,7 @@ jobs:
       
       - name: Set prepare-rollback outcome variable
         id: setpreparerollbackoutcomevariable
-        if: steps.prepare-rollback.outcome == 'success'
+        if: steps.prepare-intermediate-rollback.outcome == 'success'
         run: |
           echo "prepare-rollback-outcome=success" >> $GITHUB_OUTPUT
 
