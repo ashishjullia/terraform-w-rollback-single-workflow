@@ -6,9 +6,11 @@ on:
       - main
     paths-ignore:
       - "README.md"
+      - "assets/*"
   pull_request:
     paths-ignore:
       - "README.md"
+      - "assets/*"
 
 env:
   TF_STATE_BUCKET_NAME: "terraform-ashishjullia"
