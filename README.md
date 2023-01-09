@@ -1,7 +1,7 @@
 ### Terraform with Rollback Mechanism using GitHub Actions (Generic Solution)
 > **Note**: I tested this on **AWS** only as of  now.
 
-By deault there is no such rollback option or mechanism available in terraform (atm of writing this).
+By default there is no such rollback option or mechanism available in terraform (atm of writing this).
 
 So, in order to adapt terraform to my usual tasks I never found myself comfortable in using it in production but not anymore, I decided to leverage the functionality of GitHub Actions along with S3 bucket, DynamoDB Table and GitHub Releases.
 
