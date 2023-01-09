@@ -49,7 +49,7 @@ jobs:
         id: destroy
         if: steps.validate.outcome == 'success'
         run: |
-          terraform destroy -auto-approve
           gh release list | awk '{print $1;}' | xargs -L1 gh release delete
+          terraform destroy -auto-approve
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
