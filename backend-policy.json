@@ -1,0 +1,73 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "S3SpecificAndGeneric",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetLifecycleConfiguration",
+                "s3:GetBucketTagging",
+                "s3:GetBucketLogging",
+                "s3:CreateBucket",
+                "s3:ListBucket",
+                "s3:GetAccelerateConfiguration",
+                "s3:GetBucketPolicy",
+                "s3:GetBucketObjectLockConfiguration",
+                "s3:GetEncryptionConfiguration",
+                "s3:PutBucketTagging",
+                "s3:GetBucketRequestPayment",
+                "s3:PutBucketAcl",
+                "s3:DeleteBucket",
+                "s3:PutBucketVersioning",
+                "s3:GetBucketPublicAccessBlock",
+                "s3:PutBucketPublicAccessBlock",
+                "s3:GetBucketWebsite",
+                "s3:GetBucketVersioning",
+                "s3:GetBucketAcl",
+                "s3:GetReplicationConfiguration",
+                "s3:GetBucketCORS",
+                "s3:PutEncryptionConfiguration",
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::terraform-ashishjullia",
+                "arn:aws:s3:::terraform-ashishjullia/*"
+            ]
+        },
+        {
+            "Sid": "DynamoDBSpecificTable",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:DescribeTable",
+                "dynamodb:PutItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:CreateTable",
+                "dynamodb:TagResource"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:*:*:table/tfstate-tf-test-s3-ashish"
+            ]
+        },
+        {
+            "Sid": "DynamoDBGeneric",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:ListTables"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:*:*:table/*"
+            ]
+        },
+        {
+            "Sid": "S3Generic",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListAllMyBuckets"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
