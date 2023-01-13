@@ -418,5 +418,9 @@ jobs:
           git commit -m "rollback"
           git push origin rollback-at-$rollback_time
           gh pr create -B main -H rollback-at-$rollback_time --title "Merge rollback-at-$rollback_time into main" --body 'Created by Github action'
+          echo "Commit to re-trigger on -> pull_request at $rollback_time" >> exact-rollback-time
+          git add .
+          git commit -m "re-trigger on pull_request to generate rollback terraform plan"
+          git push origin rollback-at-$rollback_time
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
