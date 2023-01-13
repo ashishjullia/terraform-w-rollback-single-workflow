@@ -426,7 +426,7 @@ jobs:
         id: pr-workflow-re-trigger
         if: steps.pullrequest.outcome == 'success'
         run: |
-          cd working-code
+          cd latest-code
           git checkout rollback-at-$rollback_time
           echo "Commit to re-trigger on -> pull_request at $rollback_time" >> exact-rollback-time
           git add .
