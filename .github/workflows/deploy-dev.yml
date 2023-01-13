@@ -392,7 +392,7 @@ jobs:
         id: pullrequest
         if: steps.approved-rollback.outcome == 'success'
         run: |
-          echo "rollback_time=$(date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+          rollback_time=$(date '+%Y-%m-%d-%H-%M-%S')
           
           cd latest-code
           gh release list | awk '{print $1}' | head -1 | xargs -t -I % sh -c '{ gh release download % --archive=zip ; unzip -q terraform-w-rollback-%.zip ; mv terraform-w-rollback-% ../intermediate-code ; rm terraform-w-rollback-%.zip ; }'
@@ -418,17 +418,9 @@ jobs:
           git commit -m "rollback"
           git push origin rollback-at-$rollback_time
           gh pr create -B main -H rollback-at-$rollback_time --title "Merge rollback-at-$rollback_time into main" --body 'Created by Github action'
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Re-trigger PR workflow
-        id: pr-workflow-re-trigger
-        if: steps.pullrequest.outcome == 'success'
-        run: |
-          cd working-code
-          git checkout rollback-at-$rollback_time
           echo "Commit to re-trigger on -> pull_request at $rollback_time" >> exact-rollback-time
           git add .
           git commit -m "re-trigger on pull_request to generate rollback terraform plan"
           git push origin rollback-at-$rollback_time
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
